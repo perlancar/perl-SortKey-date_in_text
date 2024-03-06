@@ -1,10 +1,5 @@
 package SortKey::date_in_text;
 
-# AUTHORITY
-# DATE
-# DIST
-# VERSION
-
 use 5.010001;
 use strict;
 use warnings;
@@ -13,10 +8,14 @@ use DateTime;
 
 our $DATE_EXTRACT_MODULE = $ENV{PERL_DATE_EXTRACT_MODULE} // "Date::Extract";
 
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
 sub meta {
     return {
         v => 1,
-        summary => 'Sort by date found in text or (if no date is found) ascibetically',
         args => {
         },
     };
@@ -46,19 +45,19 @@ sub gen_keygen {
         } elsif ($module eq 'DateTime::Format::Alami::EN') {
             require DateTime::Format::Alami::EN;
             $parser = DateTime::Format::Alami::EN->new();
-            $code_parse = sub { my $h; eval { $h = $parser->parse_datetime($_[0]) }; $h };
+            $code_parse = sub { my $h; eval { $h = $parser->parse_datetime($_[0]) }; $h }; ## no critic: BuiltinFunctions::ProhibitStringyEval
         } elsif ($module eq 'DateTime::Format::Alami::ID') {
             require DateTime::Format::Alami::ID;
             $parser = DateTime::Format::Alami::ID->new();
-            $code_parse = sub { my $h; eval { $h = $parser->parse_datetime($_[0]) }; $h };
+            $code_parse = sub { my $h; eval { $h = $parser->parse_datetime($_[0]) }; $h }; ## no critic: BuiltinFunctions::ProhibitStringyEval
         } else {
             die "Invalid date extract module '$module'";
         }
-        eval "use $module"; die if $@;
+        eval "use $module"; die if $@; ## no critic: BuiltinFunctions::ProhibitStringyEval
     }
 
     sub {
-        no strict 'refs';
+        no strict 'refs'; ## no critic: TestingAndDebugging::ProhibitNoStrict
 
         my $dt = $code_parse->($_[0]);
         return '' unless $dt;
@@ -67,7 +66,7 @@ sub gen_keygen {
 }
 
 1;
-# ABSTRACT:
+# ABSTRACT: Date found in text as sort key
 
 =for Pod::Coverage ^(gen_keygen|meta)$
 
