@@ -59,7 +59,8 @@ sub gen_keygen {
     sub {
         no strict 'refs'; ## no critic: TestingAndDebugging::ProhibitNoStrict
 
-        my $dt = $code_parse->($_[0]);
+        my $arg = @_ ? $_[0] : $_;
+        my $dt = $code_parse->($arg);
         return '' unless $dt;
         "$dt";
     };
